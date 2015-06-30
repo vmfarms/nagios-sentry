@@ -29,7 +29,7 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
-        from sentry.models import Event
+        from sentry.models import Group
 
         project_id = options.get('project')
         level = options.get('level')
@@ -42,8 +42,10 @@ class Command(BaseCommand):
             now = datetime.datetime.now()
         datetime_offset = now - datetime.timedelta(seconds=seconds)
 
-        queryset = Event.objects.filter(
-            datetime__gt=datetime_offset)
+        queryset = Group.objects.filter(
+            event_set__datetime__gt=datetime_offset,
+            status=GroupStatus.UNRESOLVED
+        )
         if project_id:
             queryset = queryset.filter(project_id=project_id)
         if logger:
