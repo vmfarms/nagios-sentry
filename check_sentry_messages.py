@@ -47,12 +47,11 @@ if options.level:
     CMD.append('--level={o.level}'.format(o=options))
 if options.logger:
     CMD.append('--logger={o.logger}'.format(o=options))
-result = subprocess.Popen(" ".join(CMD), stdout=subprocess.PIPE, shell=True)
+result = subprocess.Popen(" ".join(CMD), stderr=subprocess.PIPE, shell=True)
 result.wait()
 
 status = 'UNKNOWN'
-output = result.stdout.read().strip(' \t\n\r')
-
+output = result.stderr.read().strip(' \t\n\r')
 if str(output).isdigit():
     output = int(output)
     if output >= int(options.critical):
